@@ -13,24 +13,21 @@ namespace FileGeneration
         static void Main(string[] args)
         {
             string outputFileName = "output.txt";
-            int fileSizeImMb = 4;
+            int fileSizeImMb = 2;
 
             using (StreamWriter sw = new StreamWriter(outputFileName))
             {
-                RandomFile randomFile = new RandomFile();
+                RandomFile randomFile = new RandomFile(fileSizeImMb * 1024 * 1024);
                 long size = 0;
+                long divider = 1 << 20; // to Mb
 
-                while (size / (1024 * 1024) < fileSizeImMb)
+                while (size / divider < fileSizeImMb)
                 {
-                    Record record = randomFile.GetNewRecord();
+                    Record record = randomFile.GetNewRecord(size);
                     size += record.SizeInBytes;
                     sw.WriteLine(record.Line);
                 }
-            }
-
-
-
-            
+            }           
         }
     }
 }

@@ -9,33 +9,54 @@ namespace FileGeneration
 {
     class RandomFile
     {
-        Random _random;
+        readonly Random _random;
+        readonly long _fileSize;
+        readonly long _cSameCount; // the count of the same string part
+        long _sameIterator;
 
-        public RandomFile()
+        public RandomFile(long fileSizeInBytes)
         {
             _random = new Random();
+            _fileSize = fileSizeInBytes;
+            _cSameCount = 8;
+            _sameIterator = 0;
         }
 
-        private string GetRandomWord()
+        private string GetRandomWord(long curFileSize)
         {
-            int len = _random.Next(20) + 3; // no less 3 letter per word
             string randomWord = string.Empty;
 
-            // A-Z (65-90) a-z(97-122)
-            randomWord += Convert.ToChar(_random.Next(65, 90));
-
-            for (int i = 0; i < len - 1; i++)
+            if (curFileSize > _sameIterator * _fileSize / _cSameCount)
             {
-                randomWord += Convert.ToChar(_random.Next(97, 122));
+                randomWord = "Apple";
+                _sameIterator++;
             }
+            else
+            {
+                // no less than 3 letters per word
+                int len = _random.Next(16) + 3;
+
+                // A-Z (65-90) a-z(97-122)
+                randomWord += Convert.ToChar(_random.Next(65, 90));
+
+                for (int i = 0; i < len - 1; i++)
+                {
+                    randomWord += Convert.ToChar(_random.Next(97, 122));
+                }
+            }           
 
             return randomWord;
         }
 
-        public Record GetNewRecord()
+        public void Reset()
+        {
+            _sameIterator = 0;
+        }
+
+        public Record GetNewRecord(long curFileSize)
         {
             int number = _random.Next(int.MaxValue - 1) + 1; // to avoid zero value
-            string word = GetRandomWord();
+            string word = GetRandomWord(curFileSize);
 
             return new Record(number, word);
         }
