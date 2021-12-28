@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RecordLib;
 
-namespace FileGeneration
+namespace RecordLib
 {
-    class Program
+    public class Record
     {
-        static void Main(string[] args)
-        {
-        }
     }
 }
