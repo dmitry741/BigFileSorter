@@ -20,7 +20,16 @@ namespace RecordLib
             _strPart = ar[1].TrimStart();
         }
 
+        public Record(int numberPart, string strPart)
+        {
+            _numberPart = numberPart;
+            _strPart = strPart;
+            _line = $"{numberPart}. {strPart}";
+        }
+
         public string Line => _line;
+
+        public int SizeInBytes => _line.Length + 2;
 
         public int CompareTo(Record other)
         {
