@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileGeneration", "FileGener
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordLib", "RecordLib\RecordLib.csproj", "{33267568-218B-4259-90A8-26C3490FE10C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{C86A0F3C-9AB7-461A-AC29-395C939D1400}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{33267568-218B-4259-90A8-26C3490FE10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33267568-218B-4259-90A8-26C3490FE10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33267568-218B-4259-90A8-26C3490FE10C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C86A0F3C-9AB7-461A-AC29-395C939D1400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C86A0F3C-9AB7-461A-AC29-395C939D1400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C86A0F3C-9AB7-461A-AC29-395C939D1400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C86A0F3C-9AB7-461A-AC29-395C939D1400}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
