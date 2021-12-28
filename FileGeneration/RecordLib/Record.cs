@@ -36,5 +36,10 @@ namespace RecordLib
             int strCompare = _strPart.CompareTo(other._strPart);
             return (strCompare != 0) ? strCompare : _numberPart.CompareTo(other._numberPart);
         }
+
+        public override string ToString()
+        {
+            return _line;
+        }
     }
 }
