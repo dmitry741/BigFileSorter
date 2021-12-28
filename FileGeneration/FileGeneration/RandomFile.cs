@@ -40,7 +40,7 @@ namespace FileGeneration
                     // no less than 3 letters per word
                     int len = _random.Next(12) + 3;
 
-                    for (int i = 0; i < len - 1; i++)
+                    for (int i = 0; i < len; i++)
                     {
                         if (j == 0)
                         {
