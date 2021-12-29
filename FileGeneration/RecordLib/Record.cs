@@ -8,8 +8,14 @@ namespace RecordLib
 {
     public class Record : IComparable<Record>
     {
-        readonly string _strPart;
-        readonly int _numberPart;
+        string _strPart;
+        int _numberPart;
+
+        public Record()
+        {
+            _strPart = string.Empty;
+            _numberPart = 0;
+        }
 
         public Record(string line)
         {
@@ -24,7 +30,16 @@ namespace RecordLib
             _strPart = strPart;
         }
 
-        public string Line => $"{_numberPart}. {_strPart}";
+        public string Line
+        {
+            get { return $"{_numberPart}. {_strPart}"; }            
+            set
+            {
+                string[] ar = value.Split('.');
+                _numberPart = int.Parse(ar[0]);
+                _strPart = ar[1].TrimStart();
+            }
+        }
 
         public int SizeInBytes => Line.Length + 2;
 
