@@ -12,8 +12,8 @@ namespace FileSorter
     {
         static void Main(string[] args)
         {
-            string inputFile = "input1.txt";
-            string outputFile = "output1.txt";
+            string inputFile = "input.txt";
+            string outputFile = "output.txt";
 
             FileInfo file = new FileInfo(inputFile);
             long sizeFile = file.Length;
@@ -85,24 +85,34 @@ namespace FileSorter
                         records[iterator % procs].Add(new Record(line));
                         iterator++;
                     }
+
+                    /*string all = sr.ReadToEnd();
+                    int startIndex = 0;
+                    int pos = all.IndexOf(Environment.NewLine, 0);
+                    int iterator = 0;
+
+                    while (pos > 0)
+                    {
+                        string line = all.Substring(startIndex, pos - startIndex);
+                        records[iterator % procs].Add(new Record(line));
+                        iterator++;
+                        startIndex = pos + 2;
+                        pos = all.IndexOf(Environment.NewLine, startIndex);
+                    }*/
                 }
 
-                /*
-                Action[] actions = new Action[procs];
-
-                for (int i = 0; i < procs; i++)
-                {
-                    actions[i] = new Action(delegate () { records[i].Sort(); });
-                }
-
-                Parallel.Invoke(actions);*/
-
-                for (int i = 0; i < procs; i++)
-                {
-                    records[i].Sort();
-                }
+                Parallel.For(0, procs, i => {
+                    int index = i;
+                    records[index].Sort();
+                });
 
                 int[] positions = new int[procs];
+                Record[] recs = new Record[procs];
+
+                for (int i = 0; i < procs; i++)
+                {
+                    recs[i] = records[i][0];
+                }
 
                 using (StreamWriter sw = new StreamWriter(outputFile))
                 {
@@ -117,17 +127,17 @@ namespace FileSorter
                             {
                                 if (minRec != null)
                                 {
-                                    int compare = records[i][positions[i]].CompareTo(minRec);
+                                    int compare = recs[i].CompareTo(minRec);
 
                                     if (compare < 0)
                                     {
-                                        minRec = records[i][positions[i]];
+                                        minRec = recs[i];
                                         index = i;
                                     }
                                 }
                                 else
                                 {
-                                    minRec = records[i][positions[i]];
+                                    minRec = recs[i];
                                     index = i;
                                 }
                             }
@@ -136,16 +146,16 @@ namespace FileSorter
                         if (index < 0)
                             break;
 
-                        sw.WriteLine(minRec);
+                        sw.WriteLine(minRec.Line);
 
                         positions[index]++;
+
+                        if (positions[index] < records[index].Count)
+                        {
+                            recs[index] = records[index][positions[index]];
+                        }
                     }
                 }
-
-
-
-
-
             }
         }
     }
