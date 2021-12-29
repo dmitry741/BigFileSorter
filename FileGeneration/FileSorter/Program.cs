@@ -75,30 +75,16 @@ namespace FileSorter
                     records[i] = new List<Record>();
                 }
 
-                using (StreamReader sr = new StreamReader(inputFile))
+                using (StreamReader sr = File.OpenText(inputFile))
                 {
                     int iterator = 0;
+                    string line = string.Empty;
 
-                    while (sr.Peek() >= 0)
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        string line = sr.ReadLine();
                         records[iterator % procs].Add(new Record(line));
                         iterator++;
                     }
-
-                    /*string all = sr.ReadToEnd();
-                    int startIndex = 0;
-                    int pos = all.IndexOf(Environment.NewLine, 0);
-                    int iterator = 0;
-
-                    while (pos > 0)
-                    {
-                        string line = all.Substring(startIndex, pos - startIndex);
-                        records[iterator % procs].Add(new Record(line));
-                        iterator++;
-                        startIndex = pos + 2;
-                        pos = all.IndexOf(Environment.NewLine, startIndex);
-                    }*/
                 }
 
                 Parallel.For(0, procs, i => {
@@ -116,10 +102,13 @@ namespace FileSorter
 
                 using (StreamWriter sw = new StreamWriter(outputFile))
                 {
+                    Record minRec;
+                    int index;
+
                     while (true)
                     {
-                        Record minRec = null;
-                        int index = -1;
+                        minRec = null;
+                        index = -1;
 
                         for (int i = 0; i < procs; i++)
                         {
@@ -127,9 +116,7 @@ namespace FileSorter
                             {
                                 if (minRec != null)
                                 {
-                                    int compare = recs[i].CompareTo(minRec);
-
-                                    if (compare < 0)
+                                    if (recs[i].CompareTo(minRec) < 0)
                                     {
                                         minRec = recs[i];
                                         index = i;
