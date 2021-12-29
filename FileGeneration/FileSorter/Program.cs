@@ -143,6 +143,7 @@ namespace FileSorter
                 }
             }
 
+            // finally block
             for (int i = 0; i < parts; i++)
             {
                 streamReaders[i].Close();
