@@ -12,8 +12,8 @@ namespace FileGeneration
     {
         static void Main(string[] args)
         {
-            string outputFileName = "..\\..\\..\\FileSorter\\bin\\Debug\\input.txt";
-            int fileSizeImMb = 1;
+            string outputFileName = "..\\..\\..\\FileSorter\\bin\\Debug\\inputGb.txt";
+            int fileSizeImMb = 1024;
 
             using (StreamWriter sw = new StreamWriter(outputFileName))
             {
