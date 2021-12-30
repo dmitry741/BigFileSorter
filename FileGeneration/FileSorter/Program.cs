@@ -12,7 +12,10 @@ namespace FileSorter
     {
         static void Main(string[] args)
         {
+            // path to input file
             string inputFile = "inputGb.txt";
+
+            // path to output file
             string outputFile = "output.txt";
 
             FileInfo file = new FileInfo(inputFile);
@@ -60,8 +63,8 @@ namespace FileSorter
                 while ((line = sr.ReadLine()) != null)
                 {
                     var re = new Record(line);
-                    size += re.SizeInBytes;
                     records[iterator % procs].Add(re);
+                    size += re.SizeInBytes;
                     iterator++;
 
                     if (partIterator < parts)
@@ -84,11 +87,14 @@ namespace FileSorter
                 WriteRecords($"_temp{parts}.txt", records);                
             }
 
-            // merge sorted files
             StreamReader[] streamReaders = new StreamReader[parts];
             StreamWriter sw = null;
 
-            for(int i = 0; i < parts; i++)
+            //try
+            //{
+            // merge sorted files
+
+            for (int i = 0; i < parts; i++)
             {
                 streamReaders[i] = new StreamReader($"_temp{i + 1}.txt");
             }
@@ -142,7 +148,13 @@ namespace FileSorter
                     r[index].Line = lines[index];
                 }
             }
-
+            //}
+            //catch(Exception e)
+            //{
+            //Console.WriteLine(e.Message); 
+            //}
+            //finally
+            //{
             // finally block
             for (int i = 0; i < parts; i++)
             {
@@ -155,25 +167,21 @@ namespace FileSorter
             {
                 File.Delete($"_temp{i + 1}.txt");
             }
+            //}
         }
 
         static void WriteRecords(string outputFile, List<Record>[] records)
         {
             int procs = records.Length;
+            Record[][] arRecs = new Record[procs][];
 
             Parallel.For(0, procs, i => {
                 int index = i;
-                Array.Sort(records[index].ToArray());
-                //records[index].Sort();
+                arRecs[index] = records[index].ToArray();
+                Array.Sort(arRecs[index]);
             });
 
             int[] positions = new int[procs];
-            Record[] recs = new Record[procs];
-
-            for (int i = 0; i < procs; i++)
-            {
-                recs[i] = records[i][0];
-            }
 
             using (StreamWriter sw = new StreamWriter(outputFile))
             {
@@ -191,15 +199,15 @@ namespace FileSorter
                         {
                             if (minRec != null)
                             {
-                                if (recs[i].CompareTo(minRec) < 0)
+                                if (arRecs[i][positions[i]].CompareTo(minRec) < 0)
                                 {
-                                    minRec = recs[i];
+                                    minRec = arRecs[i][positions[i]];
                                     index = i;
                                 }
                             }
                             else
                             {
-                                minRec = recs[i];
+                                minRec = arRecs[i][positions[i]];
                                 index = i;
                             }
                         }
@@ -209,13 +217,7 @@ namespace FileSorter
                         break;
 
                     sw.WriteLine(minRec.Line);
-
-                    positions[index]++;
-
-                    if (positions[index] < records[index].Count)
-                    {
-                        recs[index] = records[index][positions[index]];
-                    }
+                    positions[index]++;                    
                 }
             }
         }

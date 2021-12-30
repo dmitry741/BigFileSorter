@@ -11,13 +11,6 @@ namespace RecordLib
         string _strPart;
         int _numberPart;
 
-        private void Construct(string line)
-        {
-            string[] ar = line.Split('.');
-            _numberPart = int.Parse(ar[0]);
-            _strPart = ar[1].TrimStart();
-        }
-
         public Record()
         {
             _strPart = string.Empty;
@@ -26,7 +19,9 @@ namespace RecordLib
 
         public Record(string line)
         {
-            Construct(line);
+            string[] ar = line.Split('.');
+            _numberPart = int.Parse(ar[0]);
+            _strPart = ar[1].TrimStart();
         }
 
         public Record(int numberPart, string strPart)
@@ -37,10 +32,12 @@ namespace RecordLib
 
         public string Line
         {
-            get { return $"{_numberPart}. {_strPart}"; }            
+            get { return $"{_numberPart}. {_strPart}"; }
             set
             {
-                Construct(value);
+                string[] ar = value.Split('.');
+                _numberPart = int.Parse(ar[0]);
+                _strPart = ar[1].TrimStart();
             }
         }
 
