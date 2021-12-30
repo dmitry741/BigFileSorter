@@ -13,7 +13,7 @@ namespace FileSorter
         static void Main(string[] args)
         {
             string inputFile = "inputGb.txt";
-            string outputFile = "outputGb.txt";
+            string outputFile = "output.txt";
 
             FileInfo file = new FileInfo(inputFile);
             long sizeFile = file.Length;
@@ -28,7 +28,7 @@ namespace FileSorter
             }
             else
             {
-                long parts = sizeFile / (512 * 1024 * 1024);
+                long parts = Math.Max(sizeFile / (512 * 1024 * 1024), 2);
                 SortBySplit(inputFile, sizeFile, outputFile, parts);
             }
 
@@ -163,7 +163,8 @@ namespace FileSorter
 
             Parallel.For(0, procs, i => {
                 int index = i;
-                records[index].Sort();
+                Array.Sort(records[index].ToArray());
+                //records[index].Sort();
             });
 
             int[] positions = new int[procs];
