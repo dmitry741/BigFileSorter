@@ -12,7 +12,7 @@ namespace Verifier
         static void Main(string[] args)
         {
             // output file name
-            string fileName = "..\\..\\..\\FileSorter\\bin\\Debug\\output1.txt";
+            string fileName = "..\\..\\..\\FileSorter\\bin\\Debug\\output.txt";
 
             Console.WriteLine(Utility.IsOrdered(fileName));
             Console.ReadLine();

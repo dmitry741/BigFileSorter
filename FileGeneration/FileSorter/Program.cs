@@ -20,7 +20,7 @@ namespace FileSorter
 
             FileInfo file = new FileInfo(inputFile);
             long sizeFile = file.Length;
-            long toleranceLevel = Convert.ToInt64(640 * 1024 * 1024); // 640 Mb
+            long toleranceLevel = Convert.ToInt64(640 * ToMb()); // 640 Mb
 
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
@@ -31,7 +31,7 @@ namespace FileSorter
             }
             else
             {
-                long parts = Math.Max(sizeFile / (512 * 1024 * 1024), 2);
+                long parts = Math.Max(sizeFile / (512 * ToMb()), 2);
                 SortBySplit(inputFile, sizeFile, outputFile, parts);
             }
 
@@ -42,19 +42,18 @@ namespace FileSorter
             Console.ReadLine();
         }
 
+        static int ToMb()
+        {
+            return 1 << 20;
+        }
+
         static void SortBySplit(string inputFile, long sizeOfInputFile, string outputFile, long parts)
         {
-            int procs = Environment.ProcessorCount;
-            List<Record>[] records = new List<Record>[procs];
-
-            for (int i = 0; i < procs; i++)
-            {
-                records[i] = new List<Record>();
-            }
+            //int procs = Environment.ProcessorCount;
+            List<Record> record = new List<Record>();
 
             using (StreamReader sr = File.OpenText(inputFile))
             {
-                int iterator = 0;
                 string line;
                 long size = 0;
                 int partIterator = 1;
@@ -63,28 +62,22 @@ namespace FileSorter
                 while ((line = sr.ReadLine()) != null)
                 {
                     var re = new Record(line);
-                    records[iterator % procs].Add(re);
+                    record.Add(re);
                     size += re.SizeInBytes;
-                    iterator++;
 
                     if (partIterator < parts)
                     {
                         if (size > block)
                         {
-                            WriteRecords($"_temp{partIterator}.txt", records);
-
-                            for (int i = 0; i < procs; i++)
-                            {
-                                records[i].Clear();
-                            }
-
+                            WriteRecord($"_temp{partIterator}.txt", record);
+                            record.Clear();
                             partIterator++;
                             size = 0;
                         }
                     }
                 }
 
-                WriteRecords($"_temp{parts}.txt", records);                
+                WriteRecord($"_temp{parts}.txt", record);                
             }
 
             StreamReader[] streamReaders = new StreamReader[parts];
@@ -155,7 +148,6 @@ namespace FileSorter
             //}
             //finally
             //{
-            // finally block
             for (int i = 0; i < parts; i++)
             {
                 streamReaders[i].Close();
@@ -170,110 +162,34 @@ namespace FileSorter
             //}
         }
 
-        static void WriteRecords(string outputFile, List<Record>[] records)
+        static void WriteRecord(string outputFile, List<Record> record)
         {
-            int procs = records.Length;
-            Record[][] arRecs = new Record[procs][];
-
-            Parallel.For(0, procs, i => {
-                int index = i;
-                arRecs[index] = records[index].ToArray();
-                Array.Sort(arRecs[index]);
-            });
-
-            int[] positions = new int[procs];
+            var ordered = record.AsParallel().OrderBy(x => x);
 
             using (StreamWriter sw = new StreamWriter(outputFile))
             {
-                Record minRec;
-                int index;
-
-                while (true)
+                foreach (Record r in ordered)
                 {
-                    minRec = null;
-                    index = -1;
-
-                    for (int i = 0; i < procs; i++)
-                    {
-                        if (positions[i] < records[i].Count)
-                        {
-                            if (minRec != null)
-                            {
-                                if (arRecs[i][positions[i]].CompareTo(minRec) < 0)
-                                {
-                                    minRec = arRecs[i][positions[i]];
-                                    index = i;
-                                }
-                            }
-                            else
-                            {
-                                minRec = arRecs[i][positions[i]];
-                                index = i;
-                            }
-                        }
-                    }
-
-                    if (index < 0)
-                        break;
-
-                    sw.WriteLine(minRec.Line);
-                    positions[index]++;                    
+                    sw.WriteLine(r.Line);
                 }
             }
-        }
+        }       
 
         static void SortInRam(string inputFile, long sizeOfInputFile, string outputFile)
         {
-            const int cTolarance = 2; // Mb
+            List<Record> records = new List<Record>();
 
-            if (sizeOfInputFile < cTolarance * 1024 * 1024) // less than tolarance Mb (for short files)
+            using (StreamReader sr = File.OpenText(inputFile))
             {
-                List<Record> records = new List<Record>();
+                string line;
 
-                using (StreamReader sr = File.OpenText(inputFile))
+                while ((line = sr.ReadLine()) != null)
                 {
-                    string line;
-
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        records.Add(new Record(line));
-                    }
-                }
-
-                records.Sort();
-
-                using (StreamWriter sw = new StreamWriter(outputFile))
-                {
-                    foreach(Record record in records)
-                    {
-                        sw.WriteLine(record.Line);
-                    }
+                    records.Add(new Record(line));
                 }
             }
-            else
-            {
-                int procs = Environment.ProcessorCount;
-                List<Record>[] records = new List<Record>[procs];
 
-                for (int i = 0; i < procs; i++)
-                {
-                    records[i] = new List<Record>();
-                }
-
-                using (StreamReader sr = File.OpenText(inputFile))
-                {
-                    int iterator = 0;
-                    string line;
-
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        records[iterator % procs].Add(new Record(line));
-                        iterator++;
-                    }
-                }
-
-                WriteRecords(outputFile, records);
-            }
+            WriteRecord(outputFile, records);
         }
     }
 }

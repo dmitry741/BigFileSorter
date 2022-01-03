@@ -66,5 +66,100 @@ namespace UnitTestProject1
 
             Assert.IsTrue(Utility.IsOrdered(records));
         }
+
+        [TestMethod]
+        public void TestMethod4()
+        {
+            const string line1 = "415. Apple";
+            const string line2 = "30432. Something something something";
+            const string line3 = "32. Cherry is the best";
+            const string line4 = "2. Banana is yellow";
+            const string line5 = "1. Apple";
+
+            List<Record> records1 = new List<Record>
+            {
+                new Record(line1),
+                new Record(line2),                
+            };
+
+            records1.Sort();
+
+            List<Record> records2 = new List<Record>
+            {
+                new Record(line3),
+                new Record(line4),
+                new Record(line5),
+            };
+
+            records2.Sort();
+
+            Utility.Merge(records1, records2, out var result);
+            Assert.IsTrue(Utility.IsOrdered(result));
+            Assert.IsTrue(result.Count == records1.Count + records2.Count);
+        }
+
+        [TestMethod]
+        public void TestMethod5()
+        {
+            const string line1 = "415. Apple";
+            const string line2 = "30432. Something something something";
+            const string line3 = "32. Cherry is the best";
+            const string line4 = "2. Banana is yellow";
+            const string line5 = "1. Apple";
+
+            List<Record> records1 = new List<Record>
+            {
+                new Record(line1),
+                new Record(line2),
+                new Record(line3),
+            };
+
+            records1.Sort();
+
+            List<Record> records2 = new List<Record>
+            {                
+                new Record(line4),
+                new Record(line5),
+            };
+
+            records2.Sort();
+
+            Utility.Merge(records1, records2, out var result);
+            Assert.IsTrue(Utility.IsOrdered(result));
+            Assert.IsTrue(result.Count == records1.Count + records2.Count);
+        }
+
+        [TestMethod]
+        public void TestMethod6()
+        {
+            const string line1 = "415. Apple";
+            const string line2 = "30432. Something something something";
+            const string line3 = "32. Cherry is the best";
+            const string line4 = "2. Banana is yellow";
+            const string line5 = "1. Apple";
+            const string line6 = "345. Yyuu";
+
+            List<Record> records1 = new List<Record>
+            {
+                new Record(line1),
+                new Record(line2),
+                new Record(line3),
+            };
+
+            records1.Sort();
+
+            List<Record> records2 = new List<Record>
+            {
+                new Record(line4),
+                new Record(line5),
+                new Record(line6),
+            };
+
+            records2.Sort();
+
+            Utility.Merge(records1, records2, out var result);
+            Assert.IsTrue(Utility.IsOrdered(result));
+            Assert.IsTrue(result.Count == records1.Count + records2.Count);
+        }
     }
 }
