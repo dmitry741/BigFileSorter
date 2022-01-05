@@ -13,7 +13,7 @@ namespace FileSorter
         static void Main(string[] args)
         {
             // path to input file
-            string inputFile = "input512Mb.txt";
+            string inputFile = "inputGb.txt";
 
             // path to output file
             string outputFile = "output.txt";
@@ -25,11 +25,11 @@ namespace FileSorter
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 
-            /*if (sizeFile < toleranceLevel)
+            if (sizeFile < toleranceLevel)
             {
                 SortInRam(inputFile, sizeFile, outputFile);
             }
-            else*/
+            else
             {
                 long parts = Math.Max(sizeFile / (512 * Utility.ToMb()), 2);
                 SortBySplit(inputFile, sizeFile, outputFile, parts);
