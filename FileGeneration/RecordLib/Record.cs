@@ -11,11 +11,6 @@ namespace RecordLib
         string _line;
         string _strPart;
 
-        public Record()
-        {
-            _line = string.Empty;
-        }
-
         public Record(string line)
         {
             _line = line;

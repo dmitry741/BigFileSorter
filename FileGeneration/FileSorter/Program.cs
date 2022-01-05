@@ -13,7 +13,7 @@ namespace FileSorter
         static void Main(string[] args)
         {
             // path to input file
-            string inputFile = "inputGb.txt";
+            string inputFile = "input2Mb.txt";
 
             // path to output file
             string outputFile = "output.txt";

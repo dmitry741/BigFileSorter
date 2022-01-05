@@ -71,7 +71,7 @@ namespace UnitTestProject1
         [TestMethod]
         public void TestMethod7()
         {
-            const long fileSize = 1 * 1024 * 1024;
+            long fileSize = Convert.ToInt64(1 * Utility.ToMb());
             RandomFile randomFile = new RandomFile(fileSize);
             long size = 0;
             List<Record> records = new List<Record>();

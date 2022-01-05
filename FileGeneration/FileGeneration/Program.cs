@@ -13,18 +13,18 @@ namespace FileGeneration
         static void Main(string[] args)
         {
             // output file name
-            string outputFileName = "..\\..\\..\\FileSorter\\bin\\Debug\\inputGb.txt";
+            string outputFileName = "..\\..\\..\\FileSorter\\bin\\Debug\\input2Mb.txt";
 
             // size of file in Mb
-            int fileSizeInMb = 1024; // size of file measured in Mb, f.e. 1024 is equal to 1 Gb
+            int fileSizeInMb = 2; // size of file measured in Mb, f.e. 1024 is equal to 1 Gb
 
             using (StreamWriter sw = new StreamWriter(outputFileName))
             {
-                RandomFile randomFile = new RandomFile(fileSizeInMb * 1024 * 1024);
+                long fileSize = fileSizeInMb * Utility.ToMb();
+                RandomFile randomFile = new RandomFile(fileSize);
                 long size = 0;
-                long divider = 1 << 20; // to Mb
 
-                while (size / divider < fileSizeInMb)
+                while (size < fileSize)
                 {
                     Record record = randomFile.GetNewRecord(size);
                     size += record.SizeInBytes;
