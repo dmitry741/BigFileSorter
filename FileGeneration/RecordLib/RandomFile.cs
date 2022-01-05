@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RecordLib;
 
-namespace FileGeneration
+namespace RecordLib
 {
-    class RandomFile
+    public class RandomFile
     {
         readonly Random _random;
         readonly long _fileSize;
@@ -54,10 +53,12 @@ namespace FileGeneration
 
                     randomWord += " ";
                 }
-            }           
+            }
 
             return randomWord.TrimEnd();
         }
+
+        public long SameCount => _cSameCount;
 
         public void Reset()
         {
