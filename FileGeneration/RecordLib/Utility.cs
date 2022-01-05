@@ -39,12 +39,11 @@ namespace RecordLib
             using (System.IO.StreamReader sr = new System.IO.StreamReader(path))
             {
                 Record prev = new Record(sr.ReadLine());
-                Record next;
                 string line;
 
                 while ((line = sr.ReadLine()) != null)
                 {
-                    next = new Record(line);
+                    Record next = new Record(line);
 
                     if (prev.CompareTo(next) > 0)
                     {
@@ -52,7 +51,7 @@ namespace RecordLib
                         break;
                     }
 
-                    prev.Line = next.Line;
+                    prev = next;
                 }
             }
 
