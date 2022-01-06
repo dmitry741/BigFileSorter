@@ -20,18 +20,18 @@ namespace FileSorter
 
             FileInfo file = new FileInfo(inputFile);
             long sizeFile = file.Length;
-            long toleranceLevel = Convert.ToInt64(640 * Utility.ToMb()); // 640 Mb
+            long toleranceLevel = Convert.ToInt64(513 * Utility.ToMb());
 
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 
             if (sizeFile < toleranceLevel)
             {
-                SortInRam(inputFile, sizeFile, outputFile);
+                SortInRam(inputFile, outputFile);
             }
             else
             {
-                long parts = Math.Max(sizeFile / (256 * Utility.ToMb()), 4);
+                long parts = Math.Max(sizeFile / (256 * Utility.ToMb()), 2);
                 SortBySplit(inputFile, sizeFile, outputFile, parts);
             }
 
@@ -156,7 +156,6 @@ namespace FileSorter
             //}
             //finally
             //{
-            // finally block
             for (int i = 0; i < parts; i++)
             {
                 streamReaders[i].Close();
@@ -236,7 +235,7 @@ namespace FileSorter
             }
         }       
 
-        static void SortInRam(string inputFile, long sizeOfInputFile, string outputFile)
+        static void SortInRam(string inputFile, string outputFile)
         {
             List<Record> records = new List<Record>();
 
