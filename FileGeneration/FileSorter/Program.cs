@@ -13,7 +13,7 @@ namespace FileSorter
         static void Main(string[] args)
         {
             // path to input file
-            string inputFile = "input2Mb.txt";
+            string inputFile = "inputGb.txt";
 
             // path to output file
             string outputFile = "output.txt";
@@ -31,7 +31,7 @@ namespace FileSorter
             }
             else
             {
-                long parts = Math.Max(sizeFile / (512 * Utility.ToMb()), 2);
+                long parts = Math.Max(sizeFile / (256 * Utility.ToMb()), 4);
                 SortBySplit(inputFile, sizeFile, outputFile, parts);
             }
 
@@ -71,7 +71,7 @@ namespace FileSorter
                     {
                         if (size > block)
                         {
-                            WriteRecords($"_temp{partIterator}.txt", records);
+                            WriteRecords($"_t{partIterator}.txt", records);
 
                             for (int i = 0; i < procs; i++)
                             {
@@ -79,12 +79,13 @@ namespace FileSorter
                             }
 
                             partIterator++;
+                            iterator = 0;
                             size = 0;
                         }
                     }
                 }
 
-                WriteRecords($"_temp{parts}.txt", records);
+                WriteRecords($"_t{parts}.txt", records);
             }
 
             StreamReader[] streamReaders = new StreamReader[parts];
@@ -96,29 +97,30 @@ namespace FileSorter
 
             for (int i = 0; i < parts; i++)
             {
-                streamReaders[i] = new StreamReader($"_temp{i + 1}.txt");
+                streamReaders[i] = new StreamReader($"_t{i + 1}.txt");
             }
 
             sw = new StreamWriter(outputFile);
 
-            string[] lines = new string[parts];
             Record[] r = new Record[parts];
 
             // read the first lines
             for (int i = 0; i < parts; i++)
             {
-                lines[i] = streamReaders[i].ReadLine();
-                r[i] = new Record(lines[i]);
+                r[i] = new Record(streamReaders[i].ReadLine());
             }
+
+            Record minRec;
+            int index;
 
             while (true)
             {
-                Record minRec = null;
-                int index = -1;
+                minRec = null;
+                index = -1;
 
                 for (int i = 0; i < parts; i++)
                 {
-                    if (lines[i] != null)
+                    if (r[i] != null)
                     {
                         if (minRec != null)
                         {
@@ -140,12 +142,12 @@ namespace FileSorter
                     break;
 
                 sw.WriteLine(minRec.Line);
-                lines[index] = streamReaders[index].ReadLine();
+                string line = streamReaders[index].ReadLine();
 
-                if (lines[index] != null)
-                {
-                    r[index].Line = lines[index];
-                }
+                if (line != null)
+                    r[index].Line = line;
+                else
+                    r[index] = null;
             }
             //}
             //catch(Exception e)
@@ -164,7 +166,7 @@ namespace FileSorter
 
             for (int i = 0; i < parts; i++)
             {
-                File.Delete($"_temp{i + 1}.txt");
+                File.Delete($"_t{i + 1}.txt");
             }
             //}
         }
