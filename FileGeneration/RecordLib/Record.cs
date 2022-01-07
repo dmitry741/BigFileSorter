@@ -41,7 +41,7 @@ namespace RecordLib
 
         public int CompareTo(Record other)
         {
-            int strCompare = string.Compare(_strPart, other._strPart);
+            int strCompare = string.CompareOrdinal(_strPart, other._strPart);
 
             if (strCompare != 0) 
             {
