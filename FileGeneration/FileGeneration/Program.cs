@@ -13,10 +13,10 @@ namespace FileGeneration
         static void Main(string[] args)
         {
             // output file name
-            string outputFileName = "..\\..\\..\\FileSorter\\bin\\Debug\\input2Mb.txt";
+            string outputFileName = "..\\..\\..\\FileSorter\\bin\\Debug\\inputGb.txt";
 
             // size of file in Mb
-            int fileSizeInMb = 2; // size of file measured in Mb, f.e. 1024 is equal to 1 Gb
+            int fileSizeInMb = 1024; // size of file measured in Mb, f.e. 1024 is equal to 1 Gb
 
             using (StreamWriter sw = new StreamWriter(outputFileName))
             {

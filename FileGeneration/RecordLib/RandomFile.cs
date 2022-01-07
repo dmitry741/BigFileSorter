@@ -41,7 +41,7 @@ namespace RecordLib
 
                     for (int i = 0; i < len; i++)
                     {
-                        if (j == 0)
+                        if (j == 0 && i == 0)
                         {
                             // A-Z (65-90), a-z(97-122)
                             randomWord += Convert.ToChar(_random.Next(65, 90));
